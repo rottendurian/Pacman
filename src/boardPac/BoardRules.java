@@ -1,10 +1,12 @@
 package boardPac;
 import java.util.*;
 import blockPac.Block;
+import blockPac.WeightOb;
 public class BoardRules {
 	Block[][] boardArr;
 	public int maxScore;
-	
+	ArrayList <WeightOb> newWeight = new ArrayList<WeightOb>();
+	private int zeroCheck;
     public void createBoard(int xLen, int yLen) {
         boardArr = new Block[xLen][yLen];
         int i = 0;
@@ -49,6 +51,7 @@ public class BoardRules {
     	}
     		
     }
+    //potential optimization, to no longer call this and figure out how many zeros there are once then remove a number from that each time a weight is added
     public int checkZero() {
     	int i = 0;
     	int val = 0;
@@ -66,7 +69,32 @@ public class BoardRules {
     	return val;
     }
     public void pacWeightRunner(int i,int k) {
+    	newWeight.clear();
+    	pacWeight(i,k,1);
+    	int val = 1;
+    	/*System.out.println("New Start");
+    	for (int x = 0; x < newWeight.size(); x++) {
+    		System.out.println(newWeight.get(x).getW());
+    	}*/
+    	zeroCheck = checkZero();
+    	while (zeroCheck > 0) {
+    		for(int arr = 0; arr < newWeight.size(); arr++) {
+    			if(newWeight.get(arr).getW() == val-1) {
+    				newWeight.remove(arr);
+    			}
+    		}
+    		for(int arr = 0; arr < newWeight.size(); arr++) {
+    			pacWeight(newWeight.get(arr).getX(),newWeight.get(arr).getY(),newWeight.get(arr).getW());
+    		}
+    		val++;
+    		
+    		
+    	}
     	
+    	
+    	
+    	//this is the 2nd iteration
+    	/*
     	pacWeight(i,k,1);
     	if (i > getWidth()/2 && k < getHeight()/2) {
     		pacWeightRunnerTR(i,k);
@@ -76,7 +104,9 @@ public class BoardRules {
     		pacWeightRunnerBL(i,k);
     	} else if (i >= getWidth()/2 && k >= getHeight()/2) {
     		pacWeightRunnerBR(i,k);
-    	}
+    	}*/
+    	
+    	
     	/*
     	if (!((i > getWidth()/2 && k < getHeight()/2) || (i < getWidth()/2 && k > getHeight()/2))) {
     	int x = 0;
@@ -229,23 +259,52 @@ public class BoardRules {
     	if((k) < getHeight() && (k) >= 0) {
     		if(isWall(i, k) != true) {
     			if(boardArr[i][k].getWeight() == 0) {
-    				boardArr[i][k].setWeight(val+1);
+    				setWeight(i,k,val+1);
     					//pacWeight(i,k,val+1);
+    			}
+    		}
+    	} else if (k >= getHeight()) {
+    		k=0;
+    		if(isWall(i, k) != true) {
+    			if(boardArr[i][k].getWeight() == 0) {
+    				setWeight(i,k,val+1);
+    			}
+    		}
+    	} else if (k < 0) {
+    		k=getHeight()-1;
+    		if(isWall(i, k) != true) {
+    			if(boardArr[i][k].getWeight() == 0) {
+    				setWeight(i,k,val+1);
     			}
     		}
     	}
     }
+   
     public void pacWeightI(int i, int k, int val, boolean left) {
     	if (left == true) {
     		i = i-1;
     	} else {
     		i = i+1;
     	}
-    	if((i) < getHeight() && (i) >= 0) {
+    	if((i) < getWidth() && (i) >= 0) {
     		if(isWall(i, k) != true) {
     			if(boardArr[i][k].getWeight() == 0) {
-    				boardArr[i][k].setWeight(val+1);
+    				setWeight(i,k,val+1);
     					//pacWeight(i,k,val+1);
+    			}
+    		}
+    	} else if (i >= getWidth()) {
+    		i=0;
+    		if(isWall(i, k) != true) {
+    			if(boardArr[i][k].getWeight() == 0) {
+    				setWeight(i,k,val+1);
+    			}
+    		}
+    	} else if (i < 0) {
+    		i=getWidth()-1;
+    		if(isWall(i, k) != true) {
+    			if(boardArr[i][k].getWeight() == 0) {
+    				setWeight(i,k,val+1);
     			}
     		}
     	}
@@ -280,6 +339,11 @@ public class BoardRules {
     }
     public int getWeight(int i, int k) {
     	return boardArr[i][k].getWeight();
+    }
+    public void setWeight(int i, int k, int val) {
+    	boardArr[i][k].setWeight(val);
+    	newWeight.add(new WeightOb(i,k,val));
+    	zeroCheck--;
     }
     public int getWidth() {
         return boardArr.length;
