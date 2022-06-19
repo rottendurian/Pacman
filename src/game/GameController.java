@@ -19,11 +19,15 @@ public class GameController{
 	ArrayList<Enemy> enemyArr;
 	
 	
+	private boolean changeDirection;
+	private int direction;
+	
 	//private Enemy e1;
 	//private Enemy e2;
 	private int edibleCount;
 	private boolean exit;
 	public GameController() {
+		System.out.println(System.getProperty("sun.java2d.opengl"));
 		g = new Getter(this);
 		
 		b = new Board(17,17);
@@ -129,6 +133,9 @@ public class GameController{
 	            
 	            b.pacWeightClear();
 	            b.pacWeightRunner(p.getX(),p.getY());
+	            if(changeDirection == true) {
+	            	p.changeD(direction);
+	            }
 	            //System.out.println(b.toStringWeight());
 	            //System.out.println(pause);
 	            p.move();
@@ -226,7 +233,40 @@ public class GameController{
 	public void keyPress(KeyEvent w) {
 		// TODO Auto-generated method stub
 		if (w.getKeyChar() == 'w') {
-			p.changeD(1);
+			changeDirection = true;
+			direction = 1;
+			//p.changeD(1);
+			togglePause(false);
+		} else if (w.getKeyChar() == 's') {
+			changeDirection = true;
+			direction = 2;
+			//p.changeD(2);
+            togglePause(false);
+        } else if (w.getKeyChar() == 'a') {
+        	changeDirection = true;
+			direction = 3;
+        	
+        	//p.changeD(3);
+            togglePause(false);
+        } else if (w.getKeyChar() == 'd') {
+        	changeDirection = true;
+			direction = 4;
+        	
+        	//p.changeD(4);
+            togglePause(false);
+        } else if (w.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        	togglePause();
+        } else if (w.getKeyChar() == 'r') {
+        	resetGame();
+        	
+        }
+	}
+	public void keyReleased(KeyEvent w) {
+		// TODO Auto-generated method stub
+		changeDirection = false;
+		/*if (w.getKeyChar() == 'w') {
+			
+			//p.changeD(1);
 			togglePause(false);
 		} else if (w.getKeyChar() == 's') {
             p.changeD(2);
@@ -242,7 +282,7 @@ public class GameController{
         } else if (w.getKeyChar() == 'r') {
         	resetGame();
         	
-        }
+        }*/
 	}
 	
 	public void togglePause() {

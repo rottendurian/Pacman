@@ -197,7 +197,7 @@ class KeyListenClass implements KeyListener {
     }
     @Override
     public void keyPressed(KeyEvent w) { gCu.keyPress(w); }
-    public void keyReleased(KeyEvent w) {/*keyPress(w);*/}
+    public void keyReleased(KeyEvent w) { gCu.keyReleased(w); }
     public void keyTyped(KeyEvent w) { /*keyPress(w);*/ }
     
 }
